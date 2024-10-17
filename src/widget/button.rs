@@ -16,7 +16,7 @@ use iced_core::{
     Vector, Widget,
 };
 
-pub use iced_style::button::{Appearance, StyleSheet};
+pub use crate::reexports::iced_widget::container::Catalog;
 
 use super::button_blend_appearances;
 
@@ -26,20 +26,20 @@ use super::button_blend_appearances;
 pub struct Button<'a, Message, Theme, Renderer>
 where
     Renderer: iced_core::renderer::Renderer,
-    Theme: iced_style::button::StyleSheet,
+    Theme: Catalog,
 {
     content: Element<'a, Message, Theme, Renderer>,
     on_press: Option<Message>,
     width: Length,
     height: Length,
     padding: Padding,
-    style: StyleType<<Theme as StyleSheet>::Style>,
+    style: StyleType<<Theme as Catalog>::Class<'a>>,
 }
 
 impl<'a, Message, Theme, Renderer> Button<'a, Message, Theme, Renderer>
 where
     Renderer: iced_core::renderer::Renderer,
-    Theme: iced_style::button::StyleSheet,
+    Theme: Catalog,
 {
     /// Creates a new [`Button`] with the given content.
     pub fn new(content: impl Into<Element<'a, Message, Theme, Renderer>>) -> Self {
@@ -49,7 +49,7 @@ where
             width: Length::Shrink,
             height: Length::Shrink,
             padding: Padding::new(5.0),
-            style: StyleType::Static(<Theme as StyleSheet>::Style::default()),
+            style: StyleType::Static(<Theme as Catalog>::Class::default()),
         }
     }
 
@@ -80,7 +80,7 @@ where
     }
 
     /// Sets the style variant of this [`Button`].
-    pub fn style(mut self, style: <Theme as StyleSheet>::Style) -> Self {
+    pub fn style(mut self, style: <Theme as Catalog>::Class<'a>) -> Self {
         self.style = StyleType::Static(style);
         self
     }
@@ -88,8 +88,8 @@ where
     /// Sets the animatable style variant of this [`Button`].
     pub fn blend_style(
         mut self,
-        style1: <Theme as StyleSheet>::Style,
-        style2: <Theme as StyleSheet>::Style,
+        style1: <Theme as Catalog>::Class<'a>,
+        style2: <Theme as Catalog>::Class<'a>,
         percent: f32,
     ) -> Self {
         self.style = StyleType::Blend(style1, style2, percent);
@@ -102,7 +102,7 @@ impl<'a, Message, Theme, Renderer> Widget<Message, Theme, Renderer>
 where
     Message: 'a + Clone,
     Renderer: 'a + iced_core::renderer::Renderer,
-    Theme: iced_style::button::StyleSheet,
+    Theme: Catalog,
 {
     fn tag(&self) -> tree::Tag {
         tree::Tag::of::<State>()
@@ -149,7 +149,7 @@ where
         tree: &mut Tree,
         layout: Layout<'_>,
         renderer: &Renderer,
-        operation: &mut dyn Operation<Message>,
+        operation: &mut dyn Operation,
     ) {
         operation.container(None, layout.bounds(), &mut |operation| {
             self.content.as_widget().operate(
@@ -264,7 +264,7 @@ impl<'a, Message, Theme, Renderer> From<Button<'a, Message, Theme, Renderer>>
 where
     Message: Clone + 'a,
     Renderer: iced_core::renderer::Renderer + 'a,
-    Theme: StyleSheet + 'a,
+    Theme: Catalog + 'a,
 {
     fn from(button: Button<'a, Message, Theme, Renderer>) -> Self {
         Self::new(button)
@@ -340,13 +340,13 @@ pub fn update<'a, Message: Clone>(
 }
 
 /// Draws a [`Button`].
-pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: iced_style::button::StyleSheet>(
+pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: iced_style::button::Catalog>(
     renderer: &mut Renderer,
     bounds: Rectangle,
     cursor_position: mouse::Cursor,
     is_enabled: bool,
-    style_sheet: &dyn StyleSheet<Style = <Theme as StyleSheet>::Style>,
-    style: &StyleType<<Theme as StyleSheet>::Style>,
+    style_sheet: &dyn Catalog<Style = <Theme as Catalog>::Style>,
+    style: &StyleType<<Theme as Catalog>::Class<'a>>,
     state: impl FnOnce() -> &'a State,
 ) -> Appearance {
     let is_mouse_over = cursor_position.is_over(bounds);

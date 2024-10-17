@@ -1,5 +1,5 @@
 use self::iced_core::{widget::Id as IcedId, Element, Length, Padding, Renderer as IcedRenderer};
-use crate::reexports::{iced_core, iced_style, iced_widget};
+use crate::reexports::{iced_core, iced_widget};
 
 use crate::keyframes::{as_f32, get_length, Repeat};
 use crate::timeline::Frame;

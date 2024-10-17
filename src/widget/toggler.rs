@@ -1,6 +1,6 @@
 //! Show toggle controls using togglers.
 
-use crate::reexports::{iced_core, iced_style, iced_widget};
+use crate::reexports::{iced_core, iced_widget};
 use crate::utils::static_array_from_iter;
 use iced_core::alignment;
 use iced_core::event;
@@ -18,7 +18,7 @@ use iced_core::{
 
 use crate::{chain, id, lerp};
 
-pub use iced_style::toggler::{Appearance, StyleSheet};
+use crate::reexports::iced::widget::toggler::Catalog;
 
 /// A toggler widget.
 ///
@@ -26,7 +26,7 @@ pub use iced_style::toggler::{Appearance, StyleSheet};
 pub struct Toggler<'a, Message, Theme, Renderer>
 where
     Renderer: text::Renderer,
-    Theme: iced_widget::toggler::StyleSheet,
+    Theme: Catalog,
 {
     id: id::Toggler,
     is_toggled: bool,
@@ -38,7 +38,7 @@ where
     text_alignment: alignment::Horizontal,
     spacing: f32,
     font: Option<<Renderer as iced_core::text::Renderer>::Font>,
-    style: <Theme as StyleSheet>::Style,
+    style: <Theme as Catalog>::Class<'a>,
     percent: f32,
     anim_multiplier: f32,
 }
@@ -46,7 +46,7 @@ where
 impl<'a, Message, Theme, Renderer> Toggler<'a, Message, Theme, Renderer>
 where
     Renderer: text::Renderer,
-    Theme: iced_widget::toggler::StyleSheet,
+    Theme: Catalog,
 {
     /// The default size of a [`Toggler`].
     pub const DEFAULT_SIZE: f32 = 20.0;
@@ -119,7 +119,7 @@ where
     }
 
     /// Sets the style of the [`Toggler`].
-    pub fn style(mut self, style: impl Into<<Theme as StyleSheet>::Style>) -> Self {
+    pub fn style(mut self, style: impl Into<<Theme as Catalog>::Class>) -> Self {
         self.style = style.into();
         self
     }
@@ -145,7 +145,7 @@ impl<'a, Message, Theme, Renderer> Widget<Message, Theme, Renderer>
     for Toggler<'a, Message, Theme, Renderer>
 where
     Renderer: text::Renderer,
-    Theme: StyleSheet + widget::text::StyleSheet,
+    Theme: Catalog + widget::text::Catalog,
 {
     fn size(&self) -> Size<Length> {
         Size {
@@ -353,7 +353,7 @@ impl<'a, Message, Theme, Renderer> From<Toggler<'a, Message, Theme, Renderer>>
 where
     Message: 'a,
     Renderer: 'a + text::Renderer,
-    Theme: StyleSheet + widget::text::StyleSheet + 'a,
+    Theme: Catalog + widget::text::Catalog + 'a,
 {
     fn from(
         toggler: Toggler<'a, Message, Theme, Renderer>,

@@ -10,7 +10,7 @@ use iced_core::renderer;
 use iced_core::widget::{self, Operation, Tree};
 use iced_core::{
     Background, Clipboard, Color, Element, Layout, Length, Padding, Pixels, Point, Rectangle,
-    Shell, Size, Theme, Widget,
+    Shell, Size, Widget,
 };
 
 use super::container_blend_appearances;
