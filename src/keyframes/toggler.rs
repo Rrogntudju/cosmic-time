@@ -1,11 +1,11 @@
 use crate::reexports::{
     iced_core::{text, widget::Id as IcedId, Renderer as IcedRenderer},
-    iced_style,
 };
 
 use crate::keyframes::Repeat;
 use crate::timeline::Frame;
 use crate::{chain, lazy::toggler as lazy, toggler, Duration, Ease, Linear, MovementType};
+use crate::reexports::iced_widget::toggler::Catalog;
 
 /// A Toggler's animation Id. Used for linking animation built in `update()` with widget output in `view()`
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -49,7 +49,7 @@ impl Id {
     where
         Renderer: IcedRenderer + text::Renderer,
         F: 'a + Fn(Chain, bool) -> Message,
-        Theme: iced_style::toggler::StyleSheet,
+        Theme: Catalog,
     {
         Toggler::as_widget(self, timeline, label, is_toggled, f)
     }
@@ -198,7 +198,7 @@ impl Toggler {
     where
         Renderer: IcedRenderer + text::Renderer,
         F: 'a + Fn(Chain, bool) -> Message,
-        Theme: iced_style::toggler::StyleSheet,
+        Theme: Catalog,
     {
         crate::widget::Toggler::new(id.clone(), label, is_toggled, f).percent(
             timeline

@@ -4,6 +4,7 @@ use crate::reexports::{iced_core, iced_widget};
 use crate::keyframes::{as_f32, get_length, Repeat};
 use crate::timeline::Frame;
 use crate::{Ease, Linear, MovementType};
+use crate::reexports::iced_widget::button::Catalog;
 
 /// A Button's animation Id. Used for linking animation built in `update()` with widget output in `view()`
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -43,7 +44,7 @@ impl Id {
     ) -> iced_widget::Button<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: iced_style::button::StyleSheet,
+        Theme: Catalog,
     {
         Button::as_widget(self, timeline, content)
     }
@@ -152,7 +153,7 @@ impl Button {
     ) -> iced_widget::Button<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: iced_style::button::StyleSheet,
+        Theme: Catalog,
     {
         let id: IcedId = id.into();
 
