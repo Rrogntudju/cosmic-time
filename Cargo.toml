@@ -18,7 +18,6 @@ iced = [
     "dep:iced_widget",
     "dep:iced_futures",
     "dep:iced_core",
-    "dep:iced_style",
 ]
 once_cell = ["dep:once_cell"]
 wayland-libcosmic = ["libcosmic", "libcosmic/wayland"]
@@ -29,14 +28,11 @@ libcosmic = ["dep:libcosmic"]
 members = ["examples/*"]
 
 [dependencies]
-iced = { git = "https://github.com/iced-rs/iced", rev = "5540ac0", features = [
-    "tokio",
-], optional = true }
-iced_runtime = { git = "https://github.com/iced-rs/iced", rev = "5540ac0", optional = true }
-iced_widget = { git = "https://github.com/iced-rs/iced", rev = "5540ac0", optional = true }
-iced_futures = { git = "https://github.com/iced-rs/iced", rev = "5540ac0", optional = true }
-iced_core = { git = "https://github.com/iced-rs/iced", rev = "5540ac0", optional = true }
-iced_style = { git = "https://github.com/iced-rs/iced", rev = "5540ac0", optional = true }
+iced = { version = "0.13", features = ["tokio",], optional = true }
+iced_runtime = { version = "0.13", optional = true }
+iced_widget = { version = "0.13", optional = true }
+iced_futures = { version = "0.13", optional = true }
+iced_core = { version = "0.13", optional = true }
 libcosmic = { git = "https://github.com/pop-os/libcosmic/", default-features = false, features = [
     "tokio",
 ], optional = true }

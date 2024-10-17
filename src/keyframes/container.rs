@@ -1,11 +1,12 @@
 use crate::reexports::iced_core::{
     widget::Id as IcedId, Element, Length, Padding, Pixels, Renderer as IcedRenderer,
 };
-use crate::reexports::{iced_style, iced_widget};
+use crate::reexports::{iced_widget};
 
 use crate::keyframes::{as_f32, get_length, Repeat};
 use crate::timeline::Frame;
 use crate::{Ease, Linear, MovementType};
+use crate::reexports::iced_widget::container::Catalog;
 
 /// A Container's animation Id. Used for linking animation built in `update()` with widget output in `view()`
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -45,7 +46,7 @@ impl Id {
     ) -> iced_widget::Container<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: iced_style::container::StyleSheet,
+        Theme: Catalog,
     {
         Container::as_widget(self, timeline, content)
     }
@@ -156,7 +157,7 @@ impl Container {
     ) -> iced_widget::Container<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: iced_style::container::StyleSheet,
+        Theme: Catalog,
     {
         let id: IcedId = id.into();
 

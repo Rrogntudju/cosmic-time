@@ -1,7 +1,7 @@
 #![allow(clippy::too_many_arguments)]
 
 use crate::{
-    reexports::{iced_core, iced_style},
+    reexports::{iced_core},
     utils::static_array_from_iter,
 };
 
@@ -43,7 +43,7 @@ pub use toggler::Toggler;
 pub enum StyleType<T> {
     /// The style is either default, or set manually in the `view`.
     Static(T),
-    /// The stlye is being animated. Blend between the two values.
+    /// The style is being animated. Blend between the two values.
     Blend(T, T, f32),
 }
 

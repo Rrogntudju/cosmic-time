@@ -1,6 +1,6 @@
 //! Decorate content and apply alignment.
 
-use crate::reexports::{iced_core, iced_style};
+use crate::reexports::{iced_core};
 use iced_core::alignment::{self, Alignment};
 use iced_core::event::{self, Event};
 use iced_core::layout;
@@ -10,14 +10,12 @@ use iced_core::renderer;
 use iced_core::widget::{self, Operation, Tree};
 use iced_core::{
     Background, Clipboard, Color, Element, Layout, Length, Padding, Pixels, Point, Rectangle,
-    Shell, Size, Widget,
+    Shell, Size, Theme, Widget,
 };
 
-use crate::widget::StyleType;
-
-pub use iced_style::container::{Appearance, StyleSheet};
-
 use super::container_blend_appearances;
+use crate::widget::StyleType;
+use crate::reexports::iced_widget::container::Catalog;
 
 /// An element decorating some content.
 ///
@@ -26,7 +24,7 @@ use super::container_blend_appearances;
 pub struct Container<'a, Message, Theme, Renderer>
 where
     Renderer: iced_core::Renderer,
-    Theme: iced_style::container::StyleSheet,
+    Theme: Catalog,
 {
     id: Option<Id>,
     padding: Padding,
@@ -36,14 +34,14 @@ where
     max_height: f32,
     horizontal_alignment: alignment::Horizontal,
     vertical_alignment: alignment::Vertical,
-    style: StyleType<<Theme as StyleSheet>::Style>,
+    style: StyleType<<Theme as Catalog>::Class<'a>>,
     content: Element<'a, Message, Theme, Renderer>,
 }
 
 impl<'a, Message, Theme, Renderer> Container<'a, Message, Theme, Renderer>
 where
     Renderer: iced_core::Renderer,
-    Theme: iced_style::container::StyleSheet,
+    Theme: Catalog,
 {
     /// Creates an empty [`Container`].
     pub fn new<T>(content: T) -> Self
@@ -125,7 +123,7 @@ where
     }
 
     /// Sets the style of the [`Container`].
-    pub fn style(mut self, style: impl Into<<Theme as StyleSheet>::Style>) -> Self {
+    pub fn style(mut self, style: impl Into<<Theme as Catalog>::Class>) -> Self {
         self.style = StyleType::Static(style.into());
         self
     }
@@ -136,8 +134,8 @@ where
     /// Where 0 is 100% style1 and 1 is 100% style2.
     pub fn blend_style(
         mut self,
-        style1: <Theme as StyleSheet>::Style,
-        style2: <Theme as StyleSheet>::Style,
+        style1: <Theme as Catalog>::Class,
+        style2: <Theme as Catalog>::Class,
         percent: f32,
     ) -> Self {
         self.style = StyleType::Blend(style1, style2, percent);
@@ -149,7 +147,7 @@ impl<'a, Message, Theme, Renderer> Widget<Message, Theme, Renderer>
     for Container<'a, Message, Theme, Renderer>
 where
     Renderer: iced_core::Renderer,
-    Theme: iced_style::container::StyleSheet,
+    Theme: Catalog,
 {
     fn children(&self) -> Vec<Tree> {
         vec![Tree::new(&self.content)]
@@ -192,7 +190,7 @@ where
         tree: &mut Tree,
         layout: Layout<'_>,
         renderer: &Renderer,
-        operation: &mut dyn Operation<Message>,
+        operation: &mut dyn Operation,
     ) {
         operation.container(
             self.id.as_ref().map(|id| &id.0),
@@ -299,7 +297,7 @@ impl<'a, Message, Theme, Renderer> From<Container<'a, Message, Theme, Renderer>>
 where
     Message: 'a,
     Renderer: 'a + iced_core::Renderer,
-    Theme: iced_style::container::StyleSheet + 'a,
+    Theme: Catalog + 'a,
 {
     fn from(
         column: Container<'a, Message, Theme, Renderer>,

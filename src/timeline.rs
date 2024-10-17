@@ -10,7 +10,7 @@ mod imports {
 #[cfg(not(feature = "libcosmic"))]
 mod imports {
     pub use iced::time::{Duration, Instant};
-    pub use iced_core::{event, widget, Event, Hasher};
+    pub use iced_core::{ widget};
     pub use iced_futures::subscription::Subscription;
 }
 

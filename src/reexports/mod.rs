@@ -12,6 +12,5 @@ pub use self::libcosmic::{
 mod _iced;
 #[cfg(feature = "iced")]
 pub use self::_iced::{
-    iced, iced::Theme, iced_core, iced_futures, iced_runtime, iced_style, iced_widget,
-    ButtonStyleSheet,
+    iced, iced::Theme, iced_core, iced_futures, iced_runtime, iced_widget,
 };
