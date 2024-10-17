@@ -15,7 +15,7 @@ use iced_core::{
 
 use super::container_blend_appearances;
 use crate::widget::StyleType;
-use crate::reexports::iced_widget::container::Catalog;
+use crate::reexports::iced_widget::container::{Catalog, Style};
 
 /// An element decorating some content.
 ///
@@ -123,7 +123,7 @@ where
     }
 
     /// Sets the style of the [`Container`].
-    pub fn style(mut self, style: impl Into<<Theme as Catalog>::Class>) -> Self {
+    pub fn style(mut self, style: impl Into<<Theme as Catalog>::Class<'a>>) -> Self {
         self.style = StyleType::Static(style.into());
         self
     }
@@ -134,8 +134,8 @@ where
     /// Where 0 is 100% style1 and 1 is 100% style2.
     pub fn blend_style(
         mut self,
-        style1: <Theme as Catalog>::Class,
-        style2: <Theme as Catalog>::Class,
+        style1: <Theme as Catalog>::Class<'a>,
+        style2: <Theme as Catalog>::Class<'a>,
         percent: f32,
     ) -> Self {
         self.style = StyleType::Blend(style1, style2, percent);
@@ -346,7 +346,7 @@ pub fn layout<Renderer>(
 /// Draws the background of a [`Container`] given its [`Appearance`] and its `bounds`.
 pub fn draw_background<Renderer>(
     renderer: &mut Renderer,
-    appearance: &Appearance,
+    appearance: &Style,
     bounds: Rectangle,
 ) where
     Renderer: iced_core::Renderer,

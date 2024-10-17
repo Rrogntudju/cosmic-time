@@ -1,7 +1,7 @@
 use crate::reexports::iced_core::{
     widget::Id as IcedId, Element, Length, Padding, Pixels, Renderer as IcedRenderer,
 };
-use crate::reexports::iced_style::container::StyleSheet;
+use crate::reexports::iced_widget::container::Catalog;
 
 use crate::keyframes::{as_f32, get_length, Repeat};
 use crate::timeline::{Frame, Interped};
@@ -41,13 +41,13 @@ impl Id {
     /// Used by [`crate::anim!`] macro
     pub fn as_widget<'a, Message, Theme, Renderer>(
         self,
-        style: fn(u8) -> <Theme as StyleSheet>::Style,
+        style: fn(u8) -> <Theme as Catalog>::Class<'a>,
         timeline: &crate::Timeline,
         content: impl Into<Element<'a, Message, Theme, Renderer>>,
     ) -> crate::widget::Container<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: StyleSheet,
+        Theme: Catalog,
     {
         StyleContainer::as_widget(self, style, timeline, content)
     }
@@ -56,14 +56,14 @@ impl Id {
     /// Used by [`crate::anim!`] macro
     pub fn as_widget<'a, Message, Theme, Renderer>(
         self,
-        style: fn(u8) -> <Theme as StyleSheet>::Style,
+        style: fn(u8) -> <Theme as Catalog>::Style,
         timeline: &crate::Timeline,
         content: impl Into<Element<'a, Message, Theme, Renderer>>,
     ) -> crate::widget::Container<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: StyleSheet + cosmic::cosmic_theme::LayeredTheme,
-        <Theme as crate::reexports::iced_style::container::StyleSheet>::Style:
+        Theme: Catalog + cosmic::cosmic_theme::LayeredTheme,
+        <Theme as crate::reexports::iced_style::container::Catalog>::Style:
             From<cosmic::theme::Container>,
     {
         StyleContainer::as_widget(self, style, timeline, content)
@@ -180,13 +180,13 @@ impl StyleContainer {
     #[cfg(feature = "iced")]
     pub fn as_widget<'a, Message, Theme, Renderer>(
         id: Id,
-        style: fn(u8) -> <Theme as StyleSheet>::Style,
+        style: fn(u8) -> <Theme as Catalog>::Class<'a>,
         timeline: &crate::Timeline,
         content: impl Into<Element<'a, Message, Theme, Renderer>>,
     ) -> crate::widget::Container<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: StyleSheet,
+        Theme: Catalog,
     {
         let id: IcedId = id.into();
 
@@ -218,14 +218,14 @@ impl StyleContainer {
     #[cfg(feature = "libcosmic")]
     pub fn as_widget<'a, Message, Theme, Renderer>(
         id: Id,
-        style: fn(u8) -> <Theme as StyleSheet>::Style,
+        style: fn(u8) -> <Theme as Catalog>::Style,
         timeline: &crate::Timeline,
         content: impl Into<Element<'a, Message, Theme, Renderer>>,
     ) -> crate::widget::Container<'a, Message, Theme, Renderer>
     where
         Renderer: IcedRenderer,
-        Theme: StyleSheet + cosmic::cosmic_theme::LayeredTheme,
-        <Theme as crate::reexports::iced_style::container::StyleSheet>::Style:
+        Theme: Catalog + cosmic::cosmic_theme::LayeredTheme,
+        <Theme as crate::reexports::iced_style::container::Catalog>::Style:
             From<cosmic::theme::Container>,
     {
         let id: IcedId = id.into();
