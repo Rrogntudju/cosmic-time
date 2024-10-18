@@ -119,7 +119,7 @@ where
     }
 
     /// Sets the style of the [`Toggler`].
-    pub fn style(mut self, style: impl Into<<Theme as Catalog>::Class>) -> Self {
+    pub fn style(mut self, style: impl Into<<Theme as Catalog>::Class<'a>>) -> Self {
         self.style = style.into();
         self
     }
@@ -274,7 +274,7 @@ where
                 style,
                 label_layout,
                 tree.state.downcast_ref(),
-                iced_widget::text::Appearance::default(),
+                iced_widget::text::Style::default(),
                 viewport,
             );
         }
@@ -363,10 +363,10 @@ where
 }
 
 fn blend_appearances(
-    one: iced_style::toggler::Appearance,
-    mut two: iced_style::toggler::Appearance,
+    one: iced_widget::toggler::Style,
+    mut two: iced_widget::toggler::Style,
     percent: f32,
-) -> iced_style::toggler::Appearance {
+) -> iced_widget::toggler::Style {
     if percent == 0. {
         one
     } else if percent == 1. {
