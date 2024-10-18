@@ -143,13 +143,12 @@ pub fn container_blend_appearances(
     let one_border_radius: [f32; 4] = one.border.radius.into();
     let two_border_radius: [f32; 4] = two.border.radius.into();
     two.background = Some(background_mix);
-    two.border.radius = [
+    two.border.radius = from([
         lerp(one_border_radius[0], two_border_radius[0], percent),
         lerp(one_border_radius[1], two_border_radius[1], percent),
         lerp(one_border_radius[2], two_border_radius[2], percent),
         lerp(one_border_radius[3], two_border_radius[3], percent),
-    ]
-    .into();
+    ]);
     two.border.width = lerp(one.border.width, two.border.width, percent);
     two.border.color = border_color.into();
     two.text_color = text;
@@ -165,11 +164,11 @@ pub fn button_blend_appearances(
 ) -> iced_widget::button::Style {
     use crate::lerp;
 
-    // shadow offet
-    let x1 = one.shadow_offset.x;
-    let y1 = one.shadow_offset.y;
-    let x2 = two.shadow_offset.x;
-    let y2 = two.shadow_offset.y;
+    // shadow offset
+    let x1 = one.shadow.offset.x;
+    let y1 = one.shadow.offset.y;
+    let x2 = two.shadow.offset.x;
+    let y2 = two.shadow.offset.y;
 
     // background
     let background_mix: Background = match (one.background, two.background) {
@@ -252,11 +251,21 @@ pub fn button_blend_appearances(
         lerp(br1[3], br2[3], percent),
     ];
 
-    two.shadow_offset = Vector::new(lerp(x1, x2, percent), lerp(y1, y2, percent));
+    two.shadow.offset = Vector::new(lerp(x1, x2, percent), lerp(y1, y2, percent));
     two.background = Some(background_mix);
-    two.border.radius = br.into();
+    two.border.radius = from(br);
     two.border.width = lerp(one.border.width, two.border.width, percent);
     two.border.color = border_color.into();
     two.text_color = text.into();
     two
+}
+
+use iced::border::Radius;
+fn from(p: [f32; 4]) -> Radius {
+    Radius {
+        top_left: p[0],
+        top_right: p[1],
+        bottom_right: p[2],
+        bottom_left: p[3],
+    }
 }

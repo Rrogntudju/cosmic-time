@@ -251,12 +251,13 @@ where
         tree: &'b mut Tree,
         layout: Layout<'_>,
         renderer: &Renderer,
-        _translation: iced::Vector,
+        translation: iced::Vector,
     ) -> Option<overlay::Element<'b, Message, Theme, Renderer>> {
         self.content.as_widget_mut().overlay(
             &mut tree.children[0],
             layout.children().next().unwrap(),
             renderer,
+            translation,
         )
     }
 }
@@ -347,7 +348,7 @@ pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: Catalog>(
     bounds: Rectangle,
     cursor_position: mouse::Cursor,
     is_enabled: bool,
-    style_sheet: <Theme as Catalog>::Class<'a>,
+    style_sheet: Style,
     style: &StyleType<<Theme as Catalog>::Class<'a>>,
     state: impl FnOnce() -> &'a State,
 ) -> Style {
