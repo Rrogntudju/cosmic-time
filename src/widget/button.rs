@@ -16,7 +16,8 @@ use iced_core::{
     Vector, Widget,
 };
 
-pub use crate::reexports::iced_widget::container::Catalog;
+pub use crate::reexports::iced_widget::button::Catalog;
+use crate::reexports::iced_widget::button::Style;
 
 use super::button_blend_appearances;
 
@@ -250,6 +251,7 @@ where
         tree: &'b mut Tree,
         layout: Layout<'_>,
         renderer: &Renderer,
+        _translation: iced::Vector,
     ) -> Option<overlay::Element<'b, Message, Theme, Renderer>> {
         self.content.as_widget_mut().overlay(
             &mut tree.children[0],
@@ -340,15 +342,15 @@ pub fn update<'a, Message: Clone>(
 }
 
 /// Draws a [`Button`].
-pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: iced_style::button::Catalog>(
+pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: Catalog>(
     renderer: &mut Renderer,
     bounds: Rectangle,
     cursor_position: mouse::Cursor,
     is_enabled: bool,
-    style_sheet: &dyn Catalog<Style = <Theme as Catalog>::Style>,
+    style_sheet: <Theme as Catalog>::Class<'a>,
     style: &StyleType<<Theme as Catalog>::Class<'a>>,
     state: impl FnOnce() -> &'a State,
-) -> Appearance {
+) -> Style {
     let is_mouse_over = cursor_position.is_over(bounds);
 
     // todo disable blend if user has applied style.
