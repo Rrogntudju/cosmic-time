@@ -160,12 +160,12 @@ impl Row {
 
         iced_widget::Row::new()
             .spacing(timeline.get(&id, 0).map_or(0., |m| m.value))
-            .padding([
+            .padding(from([
                 timeline.get(&id, 1).map_or(0., |m| m.value),
                 timeline.get(&id, 2).map_or(0., |m| m.value),
                 timeline.get(&id, 3).map_or(0., |m| m.value),
                 timeline.get(&id, 4).map_or(0., |m| m.value),
-            ])
+            ]))
             .width(get_length(&id, timeline, 5, Length::Shrink))
             .height(get_length(&id, timeline, 6, Length::Shrink))
     }
@@ -211,5 +211,14 @@ impl From<Row> for Vec<Option<Frame>> {
       } else {
         vec![Some(Frame::lazy(row.at, 0., row.ease)); 7] // lazy evaluates for all values
       }
+    }
+}
+
+fn from(p: [f32; 4]) -> Padding {
+    Padding {
+        top: p[0],
+        right: p[1],
+        bottom: p[2],
+        left: p[3],
     }
 }

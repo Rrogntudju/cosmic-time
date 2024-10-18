@@ -160,12 +160,12 @@ impl Button {
         iced_widget::Button::new(content)
             .width(get_length(&id, timeline, 0, Length::Shrink))
             .height(get_length(&id, timeline, 1, Length::Shrink))
-            .padding([
+            .padding(from([
                 timeline.get(&id, 2).map_or(5.0, |m| m.value),
                 timeline.get(&id, 3).map_or(5.0, |m| m.value),
                 timeline.get(&id, 4).map_or(5.0, |m| m.value),
                 timeline.get(&id, 5).map_or(5.0, |m| m.value),
-            ])
+            ]))
     }
 
     pub fn width(mut self, width: Length) -> Self {
@@ -209,5 +209,14 @@ impl From<Button> for Vec<Option<Frame>> {
              Some(Frame::lazy(button.at, 5., button.ease)), // 5 = padding[3] (left)
         ]
       }
+    }
+}
+
+fn from(p: [f32; 4]) -> Padding {
+    Padding {
+        top: p[0],
+        right: p[1],
+        bottom: p[2],
+        left: p[3],
     }
 }
