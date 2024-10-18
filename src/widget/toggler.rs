@@ -12,9 +12,10 @@ use iced_core::text;
 use iced::Size;
 use iced_core::widget::{self, tree, Tree};
 use iced_core::{
-    border::Border, color, Clipboard, Color, Element, Event, Layout, Length, Pixels, Rectangle,
+    border::Border, Clipboard, Color, Element, Event, Layout, Length, Pixels, Rectangle,
     Shell, Widget,
 };
+use iced_widget::toggler::Status;
 
 use crate::{chain, id, lerp};
 
@@ -74,7 +75,7 @@ where
             text_alignment: alignment::Horizontal::Left,
             spacing: 0.0,
             font: None,
-            style: Default::default(),
+            style: <Theme as Catalog>::default(),
             percent: if is_toggled { 1.0 } else { 0.0 },
             anim_multiplier: 1.0,
         }
@@ -189,6 +190,7 @@ where
                         self.text_alignment,
                         alignment::Vertical::Top,
                         iced_core::text::Shaping::Advanced,
+                        iced_core::text::Wrapping::None,
                     )
                 } else {
                     layout::Node::new(iced_core::Size::ZERO)
@@ -286,14 +288,14 @@ where
 
         let style = if is_mouse_over {
             blend_appearances(
-                theme.hovered(&self.style, false),
-                theme.hovered(&self.style, true),
+                <Theme as crate::widget::toggler::Catalog>::style(theme, &self.style, Status::Hovered { is_toggled: false }),
+                <Theme as crate::widget::toggler::Catalog>::style(theme, &self.style, Status::Hovered { is_toggled: true }),
                 self.percent,
             )
         } else {
             blend_appearances(
-                theme.active(&self.style, false),
-                theme.active(&self.style, true),
+                <Theme as crate::widget::toggler::Catalog>::style(theme, &self.style, Status::Active { is_toggled: false }),
+                <Theme as crate::widget::toggler::Catalog>::style(theme, &self.style, Status::Active { is_toggled: true }),
                 self.percent,
             )
         };
@@ -314,7 +316,7 @@ where
                 border: Border {
                     radius: border_radius.into(),
                     width: 1.0,
-                    color: style.background_border.unwrap_or(style.background),
+                    color: style.background_border_color,
                 },
                 shadow: Default::default(),
             },
@@ -339,7 +341,7 @@ where
                 border: Border {
                     radius: border_radius.into(),
                     width: 1.0,
-                    color: style.foreground_border.unwrap_or(style.foreground),
+                    color: style.foreground_border_color,
                 },
                 shadow: Default::default(),
             },
@@ -380,8 +382,8 @@ fn blend_appearances(
                 .map(|(o, t)| lerp(*o, *t, percent)),
         );
 
-        let border_one: Color = one.background_border.unwrap_or(color!(0, 0, 0));
-        let border_two: Color = two.background_border.unwrap_or(color!(0, 0, 0));
+        let border_one: Color = one.background_border_color;
+        let border_two: Color = two.background_border_color;
 
         let new_border = static_array_from_iter::<f32, 4>(
             border_one
@@ -399,8 +401,8 @@ fn blend_appearances(
                 .map(|(o, t)| lerp(*o, *t, percent)),
         );
 
-        let f_border_one: Color = one.foreground_border.unwrap_or(color!(0, 0, 0));
-        let f_border_two: Color = two.foreground_border.unwrap_or(color!(0, 0, 0));
+        let f_border_one: Color = one.foreground_border_color;
+        let f_border_two: Color = two.foreground_border_color;
         let new_f_border = static_array_from_iter::<f32, 4>(
             f_border_one
                 .into_linear()
@@ -410,9 +412,9 @@ fn blend_appearances(
         );
 
         two.background = background.into();
-        two.background_border = Some(new_border.into());
+        two.background_border_width = new_border[0];
         two.foreground = foreground.into();
-        two.foreground_border = Some(new_f_border.into());
+        two.foreground_border_width = new_f_border[0];
         two
     }
 }
