@@ -1,7 +1,7 @@
 #![allow(clippy::too_many_arguments)]
 
 use crate::{
-    reexports::{iced_core},
+    reexports::{iced_core, iced_widget},
     utils::static_array_from_iter,
 };
 
@@ -54,10 +54,10 @@ use self::iced_core::{
 
 /// Blend between two button appearances.
 pub fn container_blend_appearances(
-    one: iced_style::container::Appearance,
-    mut two: iced_style::container::Appearance,
+    one: iced_widget::container::Style,
+    mut two: iced_widget::container::Style,
     percent: f32,
-) -> iced_style::container::Appearance {
+) -> iced_widget::container::Style {
     use crate::lerp;
 
     // background
@@ -159,10 +159,10 @@ pub fn container_blend_appearances(
 /// Blend between two button appearances.
 #[must_use]
 pub fn button_blend_appearances(
-    one: iced_style::button::Appearance,
-    mut two: iced_style::button::Appearance,
+    one: iced_widget::button::Style,
+    mut two: iced_widget::button::Style,
     percent: f32,
-) -> iced_style::button::Appearance {
+) -> iced_widget::button::Style {
     use crate::lerp;
 
     // shadow offet
