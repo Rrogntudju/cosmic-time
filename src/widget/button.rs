@@ -50,7 +50,7 @@ where
             width: Length::Shrink,
             height: Length::Shrink,
             padding: Padding::new(5.0),
-            style: StyleType::Static(<Theme as Catalog>::Class::default()),
+            style: StyleType::Static(Theme::default()),
         }
     }
 

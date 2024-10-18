@@ -57,7 +57,7 @@ where
             max_height: f32::INFINITY,
             horizontal_alignment: alignment::Horizontal::Left,
             vertical_alignment: alignment::Vertical::Top,
-            style: StyleType::Static(Default::default()),
+            style: StyleType::Static(Theme::default()),
             content: content.into(),
         }
     }
@@ -257,9 +257,9 @@ where
         viewport: &Rectangle,
     ) {
         let style = match &self.style {
-            StyleType::Static(style) => theme.appearance(style),
+            StyleType::Static(style) => theme.style(style),
             StyleType::Blend(one, two, percent) => {
-                container_blend_appearances(theme.appearance(one), theme.appearance(two), *percent)
+                container_blend_appearances(theme.style(one), theme.style(two), *percent)
             }
         };
 
@@ -283,12 +283,13 @@ where
         tree: &'b mut Tree,
         layout: Layout<'_>,
         renderer: &Renderer,
-        _translation: iced::Vector,
+        translation: iced::Vector,
     ) -> Option<overlay::Element<'b, Message, Theme, Renderer>> {
         self.content.as_widget_mut().overlay(
             &mut tree.children[0],
             layout.children().next().unwrap(),
             renderer,
+            translation,
         )
     }
 }

@@ -164,12 +164,12 @@ impl Container {
         iced_widget::Container::new(content)
             .width(get_length(&id, timeline, 0, Length::Shrink))
             .height(get_length(&id, timeline, 1, Length::Shrink))
-            .padding([
+            .padding(from([
                 timeline.get(&id, 2).map_or(0., |m| m.value),
                 timeline.get(&id, 3).map_or(0., |m| m.value),
                 timeline.get(&id, 4).map_or(0., |m| m.value),
                 timeline.get(&id, 5).map_or(0., |m| m.value),
-            ])
+            ]))
             .max_width(timeline.get(&id, 6).map_or(f32::INFINITY, |m| m.value))
             .max_height(timeline.get(&id, 7).map_or(f32::INFINITY, |m| m.value))
     }
@@ -221,5 +221,14 @@ impl From<Container> for Vec<Option<Frame>> {
       } else {
         vec![Some(Frame::lazy(container.at, 0., container.ease)); 8] // lazy evaluates for all values
       }
+    }
+}
+
+fn from(p: [f32; 4]) -> Padding {
+    Padding {
+        top: p[0],
+        right: p[1],
+        bottom: p[2],
+        left: p[3],
     }
 }
