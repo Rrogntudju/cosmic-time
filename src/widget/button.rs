@@ -15,6 +15,7 @@ use iced_core::{
     Background, Clipboard, Color, Element, Layout, Length, Padding, Point, Rectangle, Shell,
     Vector, Widget,
 };
+use iced_widget::button;
 
 pub use crate::reexports::iced_widget::button::Catalog;
 use crate::reexports::iced_widget::button::Style;
@@ -210,14 +211,14 @@ where
         let bounds = layout.bounds();
         let content_layout = layout.children().next().unwrap();
 
-        let styling = draw::<_, Theme>(
+                let styling = draw::<_, Theme>(
             renderer,
             bounds,
             cursor_position,
             self.on_press.is_some(),
             theme,
             &self.style,
-            || tree.state.downcast_ref::<State>(),
+            tree.state.downcast_ref::<State>(),
         );
 
         self.content.as_widget().draw(
@@ -348,9 +349,9 @@ pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: Catalog>(
     bounds: Rectangle,
     cursor_position: mouse::Cursor,
     is_enabled: bool,
-    style_sheet: Style,
+    theme: &Theme,
     style: &StyleType<<Theme as Catalog>::Class<'a>>,
-    state: impl FnOnce() -> &'a State,
+    state: &State,
 ) -> Style {
     let is_mouse_over = cursor_position.is_over(bounds);
 
@@ -358,32 +359,28 @@ pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: Catalog>(
     let styling = match style {
         StyleType::Static(style) => {
             if !is_enabled {
-                style_sheet.disabled(style)
+                <Theme as button::Catalog>::style(theme, style, button::Status::Disabled)
             } else if is_mouse_over {
-                let state = state();
-
                 if state.is_pressed {
-                    style_sheet.pressed(style)
+                    <Theme as button::Catalog>::style(theme, style, button::Status::Pressed)
                 } else {
-                    style_sheet.hovered(style)
+                    <Theme as button::Catalog>::style(theme, style, button::Status::Hovered)
                 }
             } else {
-                style_sheet.active(style)
+                <Theme as button::Catalog>::style(theme, style, button::Status::Active)
             }
         }
         StyleType::Blend(style1, style2, percent) => {
             let (one, two) = if !is_enabled {
-                (style_sheet.disabled(style1), style_sheet.disabled(style2))
+                (<Theme as button::Catalog>::style(theme, style1, button::Status::Disabled), <Theme as button::Catalog>::style(theme, style2, button::Status::Disabled))
             } else if is_mouse_over {
-                let state = state();
-
                 if state.is_pressed {
-                    (style_sheet.pressed(style1), style_sheet.pressed(style2))
+                    (<Theme as button::Catalog>::style(theme, style1, button::Status::Pressed), <Theme as button::Catalog>::style(theme, style2, button::Status::Pressed))
                 } else {
-                    (style_sheet.hovered(style1), style_sheet.hovered(style2))
+                    (<Theme as button::Catalog>::style(theme, style1, button::Status::Hovered), <Theme as button::Catalog>::style(theme, style2, button::Status::Hovered))
                 }
             } else {
-                (style_sheet.active(style1), style_sheet.active(style2))
+                (<Theme as button::Catalog>::style(theme, style1, button::Status::Active), <Theme as button::Catalog>::style(theme, style2, button::Status::Active))
             };
 
             button_blend_appearances(one, two, *percent)
@@ -391,13 +388,13 @@ pub fn draw<'a, Renderer: iced_core::renderer::Renderer, Theme: Catalog>(
     };
 
     if styling.background.is_some() || styling.border.width > 0.0 {
-        if styling.shadow_offset != Vector::default() {
+        if styling.shadow.offset != Vector::default() {
             // TODO: Implement proper shadow support
             renderer.fill_quad(
                 renderer::Quad {
                     bounds: Rectangle {
-                        x: bounds.x + styling.shadow_offset.x,
-                        y: bounds.y + styling.shadow_offset.y,
+                        x: bounds.x + styling.shadow.offset.x,
+                        y: bounds.y + styling.shadow.offset.y,
                         ..bounds
                     },
                     border: styling.border,
