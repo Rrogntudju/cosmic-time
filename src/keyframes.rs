@@ -59,10 +59,6 @@ pub enum Repeat {
     Forever,
 }
 
-pub trait IsChain {
-    fn repeat(&self) -> Repeat;
-}
-
 pub fn get_length(id: &widget::Id, timeline: &Timeline, index: usize, default: Length) -> Length {
     timeline
         .get(id, index)

@@ -25,7 +25,7 @@ winit-libcosmic = ["libcosmic", "libcosmic/winit"]
 libcosmic = ["dep:libcosmic"]
 
 [workspace]
-members = ["examples/*"]
+#members = ["examples/*"]
 
 [dependencies]
 iced = { version = "0.13", features = ["tokio",], optional = true }
